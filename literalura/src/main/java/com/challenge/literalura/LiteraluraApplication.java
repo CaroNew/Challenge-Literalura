@@ -1,7 +1,9 @@
 package com.challenge.literalura;
 
 import com.challenge.literalura.mainclass.MainMenu;
+import com.challenge.literalura.models.DatosLibro;
 import com.challenge.literalura.service.ApiRequest;
+import com.challenge.literalura.service.DataConversion;
 import com.fasterxml.jackson.core.JsonParser;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -31,19 +33,14 @@ public class LiteraluraApplication implements CommandLineRunner {
 		ApiRequest apiRequest = new ApiRequest();
 		String data = apiRequest.getData(rute);
 		System.out.println("*****************************************\n");
+		DataConversion dataJson = new DataConversion();
+		DatosLibro libro = dataJson.convertData(data, DatosLibro.class);
 
-		ObjectMapper objectMapper = new ObjectMapper();
-		JsonNode jsonNode = null;
-		try {
-			jsonNode = objectMapper.readTree(data);
-		} catch (Exception e) {
-			throw new RuntimeException(e);
-		}
 
 		System.out.println("data:");
-		System.out.println(jsonNode);
-		System.out.println(jsonNode.getClass().getSimpleName());
-
+		System.out.println(libro);
+		System.out.println(libro.getClass().getSimpleName());
+		//System.out.println(data);
 		System.out.println("*****************************************\n");
 
 
