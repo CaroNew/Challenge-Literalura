@@ -13,7 +13,6 @@ import java.net.http.HttpResponse;
 
 @SpringBootApplication
 public class LiteraluraApplication implements CommandLineRunner {
-	static final String RUTE = "https://gutendex.com/books";
 	public static void main(String[] args) {
 		SpringApplication.run(LiteraluraApplication.class, args);
 	}
@@ -26,9 +25,9 @@ public class LiteraluraApplication implements CommandLineRunner {
 		String rute = "http://www.gutendex.com/books/1";
 
 		ApiRequest apiRequest = new ApiRequest();
-		String data = apiRequest.getData("https://gutendex.com/books/1");
+		String data = apiRequest.getData(rute);
 		System.out.println("*****************************************\n");
-		System.out.println("data: " + apiRequest.getData(rute));
+		System.out.println("data: " + data);
 		System.out.println("*****************************************\n");
 
 
