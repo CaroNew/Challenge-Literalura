@@ -26,22 +26,23 @@ public class LiteraluraApplication implements CommandLineRunner {
 
 	@Override
 	public void run(String... args) throws Exception {
-		//MainMenu menu = new MainMenu();
-		//menu.showMenu();
+		MainMenu menu = new MainMenu();
+		menu.showMenu();
 		String rute = "https://gutendex.com/books/1";
+		//https://gutendex.com/books/?search=quijote+de+la+mancha
 
-		ApiRequest apiRequest = new ApiRequest();
-		String data = apiRequest.getData(rute);
+//		ApiRequest apiRequest = new ApiRequest();
+//		String data = apiRequest.getData(rute);
 		System.out.println("*****************************************\n");
-		DataConversion dataJson = new DataConversion();
-		DatosLibro libro = dataJson.convertData(data, DatosLibro.class);
-
-
-		System.out.println("data:");
-		System.out.println(libro);
-		System.out.println(libro.getClass().getSimpleName());
-		//System.out.println(data);
-		System.out.println("*****************************************\n");
+//		DataConversion dataJson = new DataConversion();
+//		DatosLibro libro = dataJson.convertData(data, DatosLibro.class);
+//
+//
+//		System.out.println("data:");
+//		System.out.println(libro);
+//		System.out.println(libro.getClass().getSimpleName());
+//		//System.out.println(data);
+//		System.out.println("*****************************************\n");
 
 
 	}
