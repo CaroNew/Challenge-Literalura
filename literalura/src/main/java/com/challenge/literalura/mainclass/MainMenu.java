@@ -7,18 +7,21 @@ import com.challenge.literalura.service.DataConversion;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
 public class MainMenu {
     private Scanner keyBoard = new Scanner(System.in);
     private final String BASE_URL = "https://gutendex.com/books";
+    private List<DatosLibro> library = new ArrayList<>();
 
 
     public void showMenu() {
         int option = 0;
         do {
             printMenu();
+            //TODO: Validar que la opcion sea un numero
             option = keyBoard.nextInt();
             keyBoard.nextLine();
             switch (option) {
@@ -26,10 +29,10 @@ public class MainMenu {
                     searchABookByTitle();
                     break;
                 case 2:
-                    System.out.println("listar libros");
+                    getAllBooks();
                     break;
                 case 3:
-                    System.out.println("listar autores");
+                    getAuthors();
                     break;
                 case 4:
                     System.out.println("listar autores vivos año");
@@ -47,6 +50,9 @@ public class MainMenu {
         } while (option != 6);
 
     }
+
+
+
 
     public void printMenu() {
         String menu = """
@@ -81,6 +87,7 @@ public class MainMenu {
 
         if(!libros.libros().isEmpty()) {
             DatosLibro libro = libros.libros().get(0);
+            library.add(libro);
             System.out.println("titulo: " + libro.titulo() +
                     " idioma: " + libro.idioma() +
                     " autor: " + libro.autor());
@@ -90,5 +97,26 @@ public class MainMenu {
         }
 
 
+    }
+
+    private void getAllBooks() {
+        System.out.println("listar libros");
+        library.stream()
+                .forEach(libro -> {
+            System.out.println("titulo: " + libro.titulo() +
+                    " idioma: " + libro.idioma() +
+                    " autor: " + libro.autor());
+        });
+    }
+
+
+    private void getAuthors() {
+        library.stream()
+                .forEach(libro -> {
+                    libro.autor().stream()
+                            .forEach(autor -> {
+                                System.out.println("autor: " + autor.nombre());
+                            });
+                });
     }
 }
