@@ -1,14 +1,27 @@
 package com.challenge.literalura.models;
 
+import jakarta.persistence.*;
 
+@Entity
+@Table(name = "libro")
 public class Libro {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String titulo;
+    @ManyToOne
     private Autor autor;
     private String idioma;
     private Integer numeroDeDescargas;
 
     public Libro() {
+    }
+
+    public Libro(String titulo, Autor autor, String idioma, Integer numeroDeDescargas) {
+        this.titulo = titulo;
+        this.autor = autor;
+        this.idioma = idioma;
+        this.numeroDeDescargas = numeroDeDescargas;
     }
 
     public Long getId() {
@@ -49,5 +62,16 @@ public class Libro {
 
     public void setNumeroDeDescargas(Integer numeroDeDescargas) {
         this.numeroDeDescargas = numeroDeDescargas;
+    }
+
+    @Override
+    public String toString() {
+        return "Libro{" +
+                "id=" + id +
+                ", titulo='" + titulo + '\'' +
+                ", autor=" + autor +
+                ", idioma='" + idioma + '\'' +
+                ", numeroDeDescargas=" + numeroDeDescargas +
+                '}';
     }
 }
