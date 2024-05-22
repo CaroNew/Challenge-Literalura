@@ -1,14 +1,20 @@
 package com.challenge.literalura.models;
 
 public class Autor {
+    private Long id;
     private String nombre;
-    private Integer birth_date;
-    private Integer death_date;
+    private Integer AnioNacimiento;
+    private Integer AnioMuerte;
 
-    public Autor(String nombre, Integer birth_date, Integer death_date) {
-        this.nombre = nombre;
-        this.birth_date = birth_date;
-        this.death_date = death_date;
+    public Autor() {
+    }
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
     }
 
     public String getNombre() {
@@ -19,28 +25,19 @@ public class Autor {
         this.nombre = nombre;
     }
 
-    public Integer getBirth_date() {
-        return birth_date;
+    public Integer getAnioNacimiento() {
+        return AnioNacimiento;
     }
 
-    public void setBirth_date(Integer birth_date) {
-        this.birth_date = birth_date;
+    public void setAnioNacimiento(Integer anioNacimiento) {
+        AnioNacimiento = anioNacimiento;
     }
 
-    public Integer getDeath_date() {
-        return death_date;
+    public Integer getAnioMuerte() {
+        return AnioMuerte;
     }
 
-    public void setDeath_date(Integer death_date) {
-        this.death_date = death_date;
-    }
-
-    @Override
-    public String toString() {
-        return "Autor{" +
-                "nombre='" + nombre + '\'' +
-                ", birth_date=" + birth_date +
-                ", death_date=" + death_date +
-                '}';
+    public void setAnioMuerte(Integer anioMuerte) {
+        AnioMuerte = anioMuerte;
     }
 }

@@ -89,8 +89,8 @@ public class MainMenu {
             DatosLibro libro = libros.libros().get(0);
             library.add(libro);
             System.out.println("titulo: " + libro.titulo() +
-                    " idioma: " + libro.idioma() +
-                    " autor: " + libro.autor());
+                    " idioma: " + libro.idioma().get(0) +
+                    " autor: " + libro.autor().get(0));
 
         }else{
             System.out.println("No se encontraron resultados");
