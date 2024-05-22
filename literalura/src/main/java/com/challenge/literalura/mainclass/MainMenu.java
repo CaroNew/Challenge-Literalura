@@ -35,7 +35,7 @@ public class MainMenu {
                     getAuthors();
                     break;
                 case 4:
-                    System.out.println("listar autores vivos año");
+                    getAuthorsAliveInYear();
                     break;
                 case 5:
                     System.out.println("Listar libros por idioma");
@@ -116,6 +116,25 @@ public class MainMenu {
                     libro.autor().stream()
                             .forEach(autor -> {
                                 System.out.println("autor: " + autor.nombre());
+                            });
+                });
+    }
+    //autores vivos en un año determinado
+    private void getAuthorsAliveInYear() {
+        System.out.println("ingrese año: ");
+        //TODO: Validar que el año sea un numero
+        var year = keyBoard.nextInt();
+        keyBoard.nextLine();
+        library.stream()
+                .forEach(libro -> {
+                    libro.autor().stream()
+                            //Filtrar autores vivos en el año (usar filter!)
+                            .forEach(autor -> {
+                                if(autor.nacimiento() <= year && autor.muerte() >= year){
+                                    System.out.println("autor: " + autor.nombre());
+                                }else{
+                                    System.out.println("No hay autores vivos en el año: " + year);
+                                }
                             });
                 });
     }
