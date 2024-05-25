@@ -1,20 +1,30 @@
 package com.challenge.literalura.mainclass;
 
+import com.challenge.literalura.models.Autor;
 import com.challenge.literalura.models.DatosLibro;
 import com.challenge.literalura.models.DatosLibros;
+import com.challenge.literalura.models.Libro;
+import com.challenge.literalura.repository.AutorRepository;
+import com.challenge.literalura.repository.LibroRepository;
 import com.challenge.literalura.service.ApiRequest;
 import com.challenge.literalura.service.DataConversion;
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Scanner;
+import java.util.*;
 
 public class MainMenu {
     private Scanner keyBoard = new Scanner(System.in);
     private final String BASE_URL = "https://gutendex.com/books";
     private List<DatosLibro> library = new ArrayList<>();
+    private List<Libro> librosBuscados = new ArrayList<>();
+
+    //Inyeccion de dependencias
+    private LibroRepository libroRepository;
+    private AutorRepository autorRepository;
+
+    public MainMenu(LibroRepository libroRepository, AutorRepository autorRepository) {
+        this.libroRepository = libroRepository;
+        this.autorRepository = autorRepository;
+    }
 
 
     public void showMenu() {
@@ -71,27 +81,61 @@ public class MainMenu {
         System.out.println(menu);
     }
 
+    //Obtiene datos de la web
+    public String getWebData(String title) {
+        ApiRequest request = new ApiRequest();
+        var url = BASE_URL + "/?search=" + title.replace(" ", "+");
+        return request.getData(url);
+    }
+    //Convierte los datos de la web a un objeto DatosLibros
+    public DatosLibros jsonToDatosLibros(String data) {
+        DataConversion dataConversion = new DataConversion();
+        return dataConversion.convertData(data, DatosLibros.class);
+    }
+    //Guarda el primer libro que tenga autor
+    public DatosLibro getFirstWithAuthor(List<DatosLibro> libros) {
+        return libros.stream()
+                .filter(libro -> !libro.autor().isEmpty())
+                .findFirst()
+                .orElse(null);
+    }
+
     public void searchABookByTitle() {
-        DataConversion dataobj = new DataConversion();
+
         System.out.println("Introduce el titulo del libro a buscar: ");
         var title = keyBoard.nextLine();
-        var url = BASE_URL + "/?search=" + title.replace(" ", "+");
-        ///?search=quijote+de+la+mancha
-        //System.out.println(url);
-        ApiRequest request = new ApiRequest();
-        String data = request.getData(url);
-        //System.out.println(data);
-        DataConversion dataConversion = new DataConversion();
-        DatosLibros libros = dataConversion.convertData(data, DatosLibros.class);
-        //System.out.println("es vacia: " + libros.libros().isEmpty());
+
+        String data = getWebData(title);
+        DatosLibros libros = jsonToDatosLibros(data);
 
         if(!libros.libros().isEmpty()) {
-            DatosLibro libro = libros.libros().get(0);
+            Autor authorToSave = null;
+            Libro bookToSave = null;
+            //hay libros que no tienen autor
+            //Por conveniencia solo se guardara el primer libro que tenga autor
+            DatosLibro libro = getFirstWithAuthor(libros.libros());
             library.add(libro);
-            System.out.println("titulo: " + libro.titulo() +
-                    " idioma: " + libro.idioma().get(0) +
-                    " autor: " + libro.autor().get(0));
 
+            Optional<Libro> libroBuscado = libroRepository.findByTituloContainsIgnoreCase(libro.titulo());
+            if (libroBuscado.isPresent()) {
+                System.out.println("El libro ya se encuentra registrado");
+            } else {
+                //Guardar en la base de datos
+                Optional<Autor> autorBuscado = autorRepository.findByNombre(libro.autor().get(0).nombre());
+                if (autorBuscado.isPresent()) {
+                    authorToSave = autorBuscado.get();
+                } else {
+                    authorToSave = new Autor(libro.autor().get(0).nombre(),
+                            libro.autor().get(0).nacimiento(), libro.autor().get(0).muerte());
+                    autorRepository.save(authorToSave);
+                }
+                bookToSave = new Libro(libro.titulo(), authorToSave,
+                        libro.idioma().get(0), libro.numeroDeDescargas());
+
+                authorToSave.setLibros(bookToSave);
+                libroRepository.save(bookToSave);
+                System.out.println(bookToSave.toString());
+            }
         }else{
             System.out.println("No se encontraron resultados");
         }
@@ -100,12 +144,11 @@ public class MainMenu {
     }
 
     private void getAllBooks() {
-        System.out.println("listar libros");
-        library.stream()
+        librosBuscados = libroRepository.findAll();
+        librosBuscados.stream()
+                .sorted(Comparator.comparing(Libro::getTitulo))
                 .forEach(libro -> {
-            System.out.println("titulo: " + libro.titulo() +
-                    " idioma: " + libro.idioma() +
-                    " autor: " + libro.autor());
+                    System.out.println(libro.toString());
         });
     }
 

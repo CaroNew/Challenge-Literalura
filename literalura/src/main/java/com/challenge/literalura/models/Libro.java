@@ -2,6 +2,8 @@ package com.challenge.literalura.models;
 
 import jakarta.persistence.*;
 
+import java.util.List;
+
 @Entity
 @Table(name = "libro")
 public class Libro {
@@ -12,12 +14,13 @@ public class Libro {
     @ManyToOne
     private Autor autor;
     private String idioma;
-    private Integer numeroDeDescargas;
+    private double numeroDeDescargas;
+
 
     public Libro() {
     }
 
-    public Libro(String titulo, Autor autor, String idioma, Integer numeroDeDescargas) {
+    public Libro(String titulo, Autor autor, String idioma, double numeroDeDescargas) {
         this.titulo = titulo;
         this.autor = autor;
         this.idioma = idioma;
@@ -56,22 +59,28 @@ public class Libro {
         this.idioma = idioma;
     }
 
-    public Integer getNumeroDeDescargas() {
+    public double getNumeroDeDescargas() {
         return numeroDeDescargas;
     }
 
-    public void setNumeroDeDescargas(Integer numeroDeDescargas) {
+    public void setNumeroDeDescargas(double numeroDeDescargas) {
         this.numeroDeDescargas = numeroDeDescargas;
     }
 
     @Override
     public String toString() {
-        return "Libro{" +
-                "id=" + id +
-                ", titulo='" + titulo + '\'' +
-                ", autor=" + autor +
-                ", idioma='" + idioma + '\'' +
-                ", numeroDeDescargas=" + numeroDeDescargas +
-                '}';
+        return """
+                \t\t~~~Libro~~~
+                
+                Titulo: %s
+                Idioma: %s
+                Autor: %s
+                Descargas: %s
+                
+                \t\t\t~~~
+                """.formatted(this.getTitulo(), this.getIdioma(),
+                this.getAutor().getNombre(), this.getNumeroDeDescargas());
     }
+
+
 }
