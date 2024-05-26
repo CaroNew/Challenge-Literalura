@@ -14,8 +14,8 @@ import java.util.*;
 public class MainMenu {
     private Scanner keyBoard = new Scanner(System.in);
     private final String BASE_URL = "https://gutendex.com/books";
-    private List<DatosLibro> library = new ArrayList<>();
-    private List<Libro> librosBuscados = new ArrayList<>();
+    private List<Libro> bookSearched = new ArrayList<>();
+    private List<Autor> authorsSearched = new ArrayList<>();
 
     //Inyeccion de dependencias
     private LibroRepository libroRepository;
@@ -48,7 +48,7 @@ public class MainMenu {
                     getAuthorsAliveInYear();
                     break;
                 case 5:
-                    System.out.println("Listar libros por idioma");
+                    getBooksByLanguage();
                     break;
                 case 6:
                     System.out.println("Adios!");
@@ -60,7 +60,6 @@ public class MainMenu {
         } while (option != 6);
 
     }
-
 
 
 
@@ -114,7 +113,6 @@ public class MainMenu {
             //hay libros que no tienen autor
             //Por conveniencia solo se guardara el primer libro que tenga autor
             DatosLibro libro = getFirstWithAuthor(libros.libros());
-            library.add(libro);
 
             Optional<Libro> libroBuscado = libroRepository.findByTituloContainsIgnoreCase(libro.titulo());
             if (libroBuscado.isPresent()) {
@@ -142,10 +140,15 @@ public class MainMenu {
 
 
     }
-
+    //Listar todos los libros registrados
     private void getAllBooks() {
-        librosBuscados = libroRepository.findAll();
-        librosBuscados.stream()
+        // findAll() retorna una lista de libros o
+        //retorna un lista vacia si no encuentra nada
+        bookSearched = libroRepository.findAll();
+        if(bookSearched.isEmpty()){
+            System.out.print("No se encontraron libros registrados ");
+        }
+        bookSearched.stream()
                 .sorted(Comparator.comparing(Libro::getTitulo))
                 .forEach(libro -> {
                     System.out.println(libro.toString());
@@ -154,31 +157,57 @@ public class MainMenu {
 
 
     private void getAuthors() {
-        library.stream()
-                .forEach(libro -> {
-                    libro.autor().stream()
-                            .forEach(autor -> {
-                                System.out.println("autor: " + autor.nombre());
-                            });
+        authorsSearched = autorRepository.findAll();
+        authorsSearched.stream()
+                .sorted(Comparator.comparing(Autor::getNombre))
+                .forEach(autor -> {
+                    System.out.println(autor.toString() /*+ autor.getLibros()*/);
+                    //System.out.println("Libros: ");
+                    System.out.println(autor.getLibros());
                 });
     }
+
     //autores vivos en un año determinado
     private void getAuthorsAliveInYear() {
         System.out.println("ingrese año: ");
         //TODO: Validar que el año sea un numero
         var year = keyBoard.nextInt();
         keyBoard.nextLine();
-        library.stream()
-                .forEach(libro -> {
-                    libro.autor().stream()
-                            //Filtrar autores vivos en el año (usar filter!)
-                            .forEach(autor -> {
-                                if(autor.nacimiento() <= year && autor.muerte() >= year){
-                                    System.out.println("autor: " + autor.nombre());
-                                }else{
-                                    System.out.println("No hay autores vivos en el año: " + year);
-                                }
-                            });
-                });
+        List<Autor> autoresVivos = autorRepository.getAliveAuthors(year);
+        if(autoresVivos.isEmpty()){
+            System.out.println("No hay autores vivos en el año: " + year);
+        }else{
+            autoresVivos.stream()
+                    .forEach(autor -> {
+                        System.out.println(autor.toString());
+                    });
+        }
+
     }
+
+    private void getBooksByLanguage() {
+        System.out.println("Introduce el idioma: ");
+        String msjIdioma = """
+                Idiomas disponibles:
+                -en (Inglés)
+                -es (Español)
+                -fr (Francés)
+                -de (Alemán)
+                -it (Italiano)
+                -pt (Portugués)
+                -ja (Japonés)
+                """;
+        System.out.println(msjIdioma);
+        var language = keyBoard.nextLine();
+        List<Libro> librosPorIdioma = libroRepository.findByIdiomaContainsIgnoreCase(language);
+        if(librosPorIdioma.isEmpty()){
+            System.out.println("No se encontraron libros en el idioma: " + language);
+        }else{
+            librosPorIdioma.stream()
+                    .forEach(libro -> {
+                        System.out.println(libro.toString());
+                    });
+        }
+    }
+
 }

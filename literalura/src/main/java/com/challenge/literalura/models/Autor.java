@@ -69,11 +69,15 @@ public class Autor {
 
     @Override
     public String toString() {
-        return "Autor{" +
-                "id=" + id +
-                ", nombre='" + nombre + '\'' +
-                ", AnioNacimiento=" + AnioNacimiento +
-                ", AnioMuerte=" + AnioMuerte +
-                '}';
+        return """
+                \t\t~~~Autor~~~
+                
+                Nombre: %s
+                Año de nacimiento: %d
+                Año de fallecimiento: %d
+                
+                \t\t\t~~~
+                """.formatted(this.getNombre(), this.getAnioNacimiento(),
+                this.getAnioMuerte());
     }
 }
