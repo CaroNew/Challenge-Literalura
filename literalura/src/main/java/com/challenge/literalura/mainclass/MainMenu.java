@@ -31,9 +31,9 @@ public class MainMenu {
         int option = 0;
         do {
             printMenu();
-            //TODO: Validar que la opcion sea un numero
-            option = keyBoard.nextInt();
-            keyBoard.nextLine();
+            //Me aseguro que la opcion sea un numero
+            option = getNumber();
+
             switch (option) {
                 case 1:
                     searchABookByTitle();
@@ -80,6 +80,20 @@ public class MainMenu {
         System.out.println(menu);
     }
 
+    //Valida que la opcion sea un numero
+    public int getNumber() {
+        int number = 0;
+        while (true) {
+            try {
+                number = keyBoard.nextInt();
+                return number;
+            } catch (InputMismatchException e) {
+                System.out.println("Por favor, introduce un número válido.");
+                keyBoard.nextLine(); // consume the invalid input
+            }
+        }
+    }
+
     //Obtiene datos de la web
     public String getWebData(String title) {
         ApiRequest request = new ApiRequest();
@@ -99,6 +113,8 @@ public class MainMenu {
                 .orElse(null);
     }
 
+    //Buscar un libro en la web y lo guarda en la base de datos
+    //en caso de que no este registrado
     public void searchABookByTitle() {
 
         System.out.println("Introduce el titulo del libro a buscar: ");
@@ -170,8 +186,9 @@ public class MainMenu {
     //autores vivos en un año determinado
     private void getAuthorsAliveInYear() {
         System.out.println("ingrese año: ");
-        //TODO: Validar que el año sea un numero
-        var year = keyBoard.nextInt();
+        //Validar que el año sea un numero
+        //var year = keyBoard.nextInt();
+        var year = getNumber();
         keyBoard.nextLine();
         List<Autor> autoresVivos = autorRepository.getAliveAuthors(year);
         if(autoresVivos.isEmpty()){
