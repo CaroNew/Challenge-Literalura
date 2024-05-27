@@ -84,7 +84,8 @@ Sale del programa
 
 Para este reto en particular se tomaron una series de decisiones para facilitar la realización del proyecto:
 
-- Se toma el primer libro encontrado en busqueda.
+- Se toma el primer libro encontrado en la busqueda.
+- Al testear la API se descubrió que habia libros que no tenian autor y además que coincidía con el primer primer libro encontrado. Para ese caso, se tomó la desición de tomar el primer libro encontrado que tuviera autor.
 
 
 ## EXTRAS
