@@ -101,6 +101,7 @@ public class MainMenu {
     public void searchABookByTitle() {
 
         System.out.println("Introduce el titulo del libro a buscar: ");
+        keyBoard.nextLine();
         var title = keyBoard.nextLine();
 
         String data = getWebData(title);
@@ -157,6 +158,9 @@ public class MainMenu {
 
     private void getAuthors() {
         authorsSearched = autorRepository.findAll();
+        if(bookSearched.isEmpty()){
+            System.out.print("No se encontraron autores registrados");
+        }
         authorsSearched.stream()
                 .sorted(Comparator.comparing(Autor::getNombre))
                 .forEach(autor -> {

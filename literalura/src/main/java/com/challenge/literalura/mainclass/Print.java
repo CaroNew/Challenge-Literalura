@@ -13,7 +13,7 @@ public class Print {
                 4. Listar autores vivos año
                 5. Listar libros por idioma
                 6. Salir
-                *******************************
+                ******************************
                 Elige una opción:
                 """;
         System.out.println(menu);
