@@ -36,10 +36,5 @@ public class LiteraluraApplication implements CommandLineRunner {
 	public void run(String... args) throws Exception {
 		MainMenu menu = new MainMenu(libroRepository, autorRepository);
 		menu.showMenu();
-		String rute = "https://gutendex.com/books/1";
-		//https://gutendex.com/books/?search=quijote+de+la+mancha
-		System.out.println("*****************************************\n");
-
-
 	}
 }

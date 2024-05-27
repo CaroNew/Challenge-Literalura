@@ -16,6 +16,7 @@ public class MainMenu {
     private final String BASE_URL = "https://gutendex.com/books";
     private List<Libro> bookSearched = new ArrayList<>();
     private List<Autor> authorsSearched = new ArrayList<>();
+    private Print print = new Print();
 
     //Inyeccion de dependencias
     private LibroRepository libroRepository;
@@ -30,7 +31,7 @@ public class MainMenu {
     public void showMenu() {
         int option = 0;
         do {
-            printMenu();
+            print.menu();
             //Me aseguro que la opcion sea un numero
             option = getNumber();
 
@@ -61,24 +62,6 @@ public class MainMenu {
 
     }
 
-
-
-    public void printMenu() {
-        String menu = """
-                ******************************
-                \tBienvenido a LiterAlura
-       
-                1. Buscar libro por titulo
-                2. Listar libros registrados
-                3. Listar autores registrados
-                4. Listar autores vivos año
-                5. Listar libros por idioma
-                6. Salir
-                *******************************
-                Elige una opción:
-                """;
-        System.out.println(menu);
-    }
 
     //Valida que la opcion sea un numero
     public int getNumber() {
@@ -203,20 +186,13 @@ public class MainMenu {
     }
 
     private void getBooksByLanguage() {
+
+        //Imprimir los idiomas disponibles
+        print.menuIdioma();
         System.out.println("Introduce el idioma: ");
-        String msjIdioma = """
-                Idiomas disponibles:
-                -en (Inglés)
-                -es (Español)
-                -fr (Francés)
-                -de (Alemán)
-                -it (Italiano)
-                -pt (Portugués)
-                -ja (Japonés)
-                """;
-        System.out.println(msjIdioma);
-        var language = keyBoard.nextLine();
-        List<Libro> librosPorIdioma = libroRepository.findByIdiomaContainsIgnoreCase(language);
+        keyBoard.nextLine();
+        String language = keyBoard.nextLine();
+        List<Libro> librosPorIdioma = libroRepository.findBookByLanguage(language);
         if(librosPorIdioma.isEmpty()){
             System.out.println("No se encontraron libros en el idioma: " + language);
         }else{
