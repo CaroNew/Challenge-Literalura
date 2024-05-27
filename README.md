@@ -39,7 +39,7 @@ Dependencias para agregar al crear el proyecto en Spring Initializr:
 ## Cómo probar esta API
 
 
-Modificar el archivo: [application.properties](../Challenge-Literalura/literalura/src/main/resources/application.properties) reemplazando las DB_NAME DB_USER DB_PASSWORD
+Modificar el archivo: [application.properties](../literalura/src/main/resources/application.properties) reemplazando las DB_NAME DB_USER DB_PASSWORD
 
 
 ## Funcionalidad
