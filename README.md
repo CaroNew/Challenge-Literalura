@@ -19,18 +19,18 @@ Desarrollar un Catálogo de Libros que ofrezca interacción textual (vía consol
 
 ### Menú Principal:
 
-![menu pricipal](/Challenge-Literalura/img/menu_principal.png)
+![menu pricipal](/img/menu_principal.png)
 
 
 1. **Buscar libro por titulo:** 
 Busca un libro en la API, si no esta registrado en la base de datos, lo guarda; sino informa que el libro ya se encuentra registrado. En ambos casos imprime la información del libro
 
-![info libro](/Challenge-Literalura/img/info_libro.png)
+![info libro](/img/info_libro.png)
 
 2. **Listar libro registrados**
 Lista los libros guardados en la base de datos en orden lexicográfico en caso de haber, caso contrario imprime: "No se encontraron libros registrados"
 
-![libros Registrados](/Challenge-Literalura/img/lista_libros.png)
+![libros Registrados](/img/lista_libros.png)
 
 3. **Listar autores registrados**
 Lista los autores registrados en orden lexicográfico en la base de datos, en caso de no haber autores registrados, imprime: "No se encontraron autores registrados".
