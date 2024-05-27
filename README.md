@@ -7,7 +7,33 @@ Desarrollar un Catálogo de Libros que ofrezca interacción textual (vía consol
 
 ## Tecnologias utilizadas
 
-(completar)
+- Java JDK: versión: 17 en adelante 
+
+- Maven: versión 4 en adelante
+
+- Spring: versión 3.2.3 - https://start.spring.io/
+
+- Postgres: versión 16 en adelante - 
+
+- IDE (Entorno de desenvolvimento integrado) IntelliJ IDEA- opcional -
+
+
+Configuración al crear el proyecto en Spring Initializr:
+
+- Java (versión 17 en adelante)
+
+- Maven (Initializr utiliza la versión 4)
+
+- Spring Boot (versión 3.2.3)
+
+- Proyecto en JAR
+
+
+Dependencias para agregar al crear el proyecto en Spring Initializr:
+
+- Spring Data JPA
+
+- Postgres Driver
 
 
 ## Cómo probar esta API
@@ -19,33 +45,33 @@ Desarrollar un Catálogo de Libros que ofrezca interacción textual (vía consol
 
 ### Menú Principal:
 
-![menu pricipal](/img/menu_principal.png)
+![menu pricipal](./img/menu_principal.png)
 
 
 1. **Buscar libro por titulo:** 
 Busca un libro en la API, si no esta registrado en la base de datos, lo guarda; sino informa que el libro ya se encuentra registrado. En ambos casos imprime la información del libro
 
-![info libro](/img/info_libro.png)
+![info libro](./img/info_libro.png)
 
 2. **Listar libro registrados**
 Lista los libros guardados en la base de datos en orden lexicográfico en caso de haber, caso contrario imprime: "No se encontraron libros registrados"
 
-![libros Registrados](/img/lista_libros.png)
+![libros registrados](./img/lista_libros.png)
 
 3. **Listar autores registrados**
 Lista los autores registrados en orden lexicográfico en la base de datos, en caso de no haber autores registrados, imprime: "No se encontraron autores registrados".
 
-foto
+![autores registrados](./img/lista_autoresb.png)
 
 4. **Listar autores vivos año**
 Lista los autores vivos según el año que el usuario ingrese.
 
-foto
+![autores vivos en año](./img/autores_vivos.png)
 
 5. **Listar libros por idioma**
 Lista los libros por el idioma que el usuario ingrese. Se ofrece al usuario un menú con las opciones a ingresar. 
 
-foto
+![libros por idioma](./img/lista_idioma.png)
 
 6. **Salir**
 Sale del programa

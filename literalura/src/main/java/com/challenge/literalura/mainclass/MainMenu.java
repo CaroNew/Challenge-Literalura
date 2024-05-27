@@ -172,9 +172,9 @@ public class MainMenu {
 
     //autores vivos en un año determinado
     private void getAuthorsAliveInYear() {
-        System.out.println("ingrese año: ");
+        System.out.println("Ingrese año: ");
         //Validar que el año sea un numero
-        //var year = keyBoard.nextInt();
+        //var year = keyBoard.nextInt();4
         var year = getNumber();
         keyBoard.nextLine();
         List<Autor> autoresVivos = autorRepository.getAliveAuthors(year);

@@ -15,20 +15,23 @@ public class Print {
                 6. Salir
                 ******************************
                 Elige una opción:
-                """;
+                """;5
         System.out.println(menu);
     }
 
     public void menuIdioma(){
         String msjIdioma = """
+                ---------------------
                 Idiomas disponibles:
-                -en (Inglés)
-                -es (Español)
-                -fr (Francés)
-                -de (Alemán)
-                -it (Italiano)
-                -pt (Portugués)
-                -ja (Japonés)
+                
+                  -en  (Inglés)
+                  -es  (Español)
+                  -fr  (Francés)
+                  -de  (Alemán)
+                  -it  (Italiano)
+                  -pt  (Portugués)
+                  -ja  (Japonés)
+                --------------------
                 """;
         System.out.println(msjIdioma);
     }
