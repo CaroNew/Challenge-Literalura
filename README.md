@@ -39,7 +39,7 @@ Dependencias para agregar al crear el proyecto en Spring Initializr:
 ## Cómo probar esta API
 
 
-Modificar el archivo: [application.properties](./literalura/src/main/resources/application.properties) reemplazando las DB_NAME DB_USER DB_PASSWORD
+Modificar el archivo: [application.properties](./literalura/src/main/resources/application.properties) reemplazando las varibles DB_NAME, DB_USER, DB_PASSWORD por el nombre de una base de datos creada, el nombre de usuario y contraseña respectivamente o declarado la variables de entorno de su sistema operativo, luego ejecutar el archivo LiteraluraApplication.java.
 
 
 ## Funcionalidad
