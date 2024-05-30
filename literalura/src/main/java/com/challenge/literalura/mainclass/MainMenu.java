@@ -10,6 +10,8 @@ import com.challenge.literalura.service.ApiRequest;
 import com.challenge.literalura.service.DataConversion;
 
 import java.util.*;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.stream.Collectors;
 
 public class MainMenu {
     private Scanner keyBoard = new Scanner(System.in);
@@ -54,6 +56,15 @@ public class MainMenu {
                 case 6:
                     System.out.println("Adios!");
                     break;
+                case 7:
+                    getStadistics();
+                    break;
+                case 8:
+                    getTop10Books();
+                    break;
+                case 9:
+                    getAuthorbyName();
+                    break;
                 default:
                     System.out.println("Invalid option");
                     break;
@@ -62,6 +73,40 @@ public class MainMenu {
 
     }
 
+    private void getAuthorbyName() {
+        String apellido = "";
+
+        System.out.println("Ingrese el nombre y apellido del autor: ");
+        keyBoard.nextLine();
+        String data = keyBoard.nextLine();
+
+
+        String[] names = data.split(" ");
+        apellido = names[names.length - 1];
+
+        List<Autor> autores = autorRepository.findAutorByName(apellido);
+
+        if (autores.isEmpty()) {
+            System.out.println("No se encontraron autores con el apellido: " + apellido);
+        } else {
+            Autor autor = autores.size() > 1 ? selectAuthor(autores) : autores.get(0);
+            System.out.println(autor.toString());
+        }
+
+    }
+
+    private Autor selectAuthor(List<Autor> autores) {
+        int i = 0;
+        System.out.println("Autores encontrados: ");
+        for (Autor autor : autores) {
+            System.out.println(++i + ". " + autor.toString());
+        }
+        System.out.println(i);
+        System.out.println("Seleccione un autor: ");
+        int option = getNumber();
+        return autores.get(option - 1);
+    }
+    //TODO: verificar cuando el usuario ingrese algo vacio
 
     //Valida que la opcion sea un numero
     public int getNumber() {
@@ -72,7 +117,7 @@ public class MainMenu {
                 return number;
             } catch (InputMismatchException e) {
                 System.out.println("Por favor, introduce un número válido.");
-                keyBoard.nextLine(); // consume the invalid input
+                keyBoard.nextLine(); // consume el input invalido
             }
         }
     }
@@ -83,11 +128,13 @@ public class MainMenu {
         var url = BASE_URL + "/?search=" + title.replace(" ", "+");
         return request.getData(url);
     }
+
     //Convierte los datos de la web a un objeto DatosLibros
     public DatosLibros jsonToDatosLibros(String data) {
         DataConversion dataConversion = new DataConversion();
         return dataConversion.convertData(data, DatosLibros.class);
     }
+
     //Guarda el primer libro que tenga autor
     public DatosLibro getFirstWithAuthor(List<DatosLibro> libros) {
         return libros.stream()
@@ -107,7 +154,7 @@ public class MainMenu {
         String data = getWebData(title);
         DatosLibros libros = jsonToDatosLibros(data);
 
-        if(!libros.libros().isEmpty()) {
+        if (!libros.libros().isEmpty()) {
             Autor authorToSave = null;
             Libro bookToSave = null;
             //hay libros que no tienen autor
@@ -134,32 +181,33 @@ public class MainMenu {
                 libroRepository.save(bookToSave);
                 System.out.println(bookToSave.toString());
             }
-        }else{
+        } else {
             System.out.println("No se encontraron resultados");
         }
 
 
     }
+
     //Listar todos los libros registrados
     private void getAllBooks() {
         // findAll() retorna una lista de libros o
         //retorna un lista vacia si no encuentra nada
         bookSearched = libroRepository.findAll();
-        if(bookSearched.isEmpty()){
-            System.out.print("No se encontraron libros registrados ");
+        if (bookSearched.isEmpty()) {
+            System.out.println("No se encontraron libros registrados ");
         }
         bookSearched.stream()
                 .sorted(Comparator.comparing(Libro::getTitulo))
                 .forEach(libro -> {
                     System.out.println(libro.toString());
-        });
+                });
     }
 
 
     private void getAuthors() {
         authorsSearched = autorRepository.findAll();
-        if(bookSearched.isEmpty()){
-            System.out.print("No se encontraron autores registrados");
+        if (bookSearched.isEmpty()) {
+            System.out.println("No se encontraron autores registrados");
         }
         authorsSearched.stream()
                 .sorted(Comparator.comparing(Autor::getNombre))
@@ -178,9 +226,9 @@ public class MainMenu {
         var year = getNumber();
         keyBoard.nextLine();
         List<Autor> autoresVivos = autorRepository.getAliveAuthors(year);
-        if(autoresVivos.isEmpty()){
-            System.out.println("No hay autores vivos en el año: " + year);
-        }else{
+        if (autoresVivos.isEmpty()) {
+            System.out.println("No hay autores vivos registrados del año: " + year);
+        } else {
             autoresVivos.stream()
                     .forEach(autor -> {
                         System.out.println(autor.toString());
@@ -189,6 +237,7 @@ public class MainMenu {
 
     }
 
+    // mostrar libros por idioma
     private void getBooksByLanguage() {
 
         //Imprimir los idiomas disponibles
@@ -197,14 +246,49 @@ public class MainMenu {
         keyBoard.nextLine();
         String language = keyBoard.nextLine();
         List<Libro> librosPorIdioma = libroRepository.findBookByLanguage(language);
-        if(librosPorIdioma.isEmpty()){
+        if (librosPorIdioma.isEmpty()) {
             System.out.println("No se encontraron libros en el idioma: " + language);
-        }else{
+        } else {
             librosPorIdioma.stream()
                     .forEach(libro -> {
                         System.out.println(libro.toString());
                     });
         }
+    }
+
+    //Ejercicios extra
+
+    private void getStadistics() {
+        List<Libro> booksDownloads = libroRepository.findAll();
+        DoubleSummaryStatistics stats = booksDownloads.stream()
+                .filter(libro -> libro.getNumeroDeDescargas() >= 0)
+                .collect(Collectors.summarizingDouble(Libro::getNumeroDeDescargas));
+
+        String msj = """
+                -------------------------
+                Estadisticas de descargas:
+                    Promedio total de libros: %.2f
+                    Libro menos descargado: %.2f
+                    Libro mas descargado: %.2f
+                    Total libros: %d
+                -------------------------
+                """.formatted(stats.getAverage(), stats.getMin(), stats.getMax(), stats.getCount());
+        System.out.println(msj);
+    }
+
+
+    private void getTop10Books() {
+        System.out.println("Top 10 libros mas descargados:");
+        List<String> top10Books = libroRepository.findTop10Books();
+        if (top10Books.isEmpty()) {
+            System.out.println("No se encontraron libros");
+        } else {
+            int i = 0;
+            for (String libro : top10Books) {
+                System.out.println(++i + ". " + libro);
+            }
+        }
+
     }
 
 }

@@ -13,9 +13,14 @@ public class Print {
                 4. Listar autores vivos año
                 5. Listar libros por idioma
                 6. Salir
+                
+                ------------------------------
+                7. Ver estadisticas
+                8. Top 10 libros mas descargados
+                9. Buscar autor por nombre
                 ******************************
                 Elige una opción:
-                """;5
+                """;
         System.out.println(menu);
     }
 

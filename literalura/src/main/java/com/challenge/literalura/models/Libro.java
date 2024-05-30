@@ -14,7 +14,7 @@ public class Libro {
     @ManyToOne
     private Autor autor;
     private String idioma;
-    private double numeroDeDescargas;
+    private Double numeroDeDescargas;
 
 
     public Libro() {
