@@ -122,6 +122,48 @@ public class MainMenu {
                 .orElse(null);
     }
 
+    public Libro searchOrSaveBook(Autor author, DatosLibro libro) {
+        Libro bookToSave = null;
+        List <Libro> books = author.getLibros();
+
+        Optional <Libro> bookFromAuthor = books.stream()
+                .filter(libro1 -> libro1.getTitulo().equals(libro.titulo()))
+                .findFirst();
+
+        if (bookFromAuthor.isPresent()) {
+            System.out.println("El libro ya registrado!");
+            bookToSave = bookFromAuthor.get();
+        } else {
+
+            bookToSave = new Libro(libro.titulo(), author,
+                    libro.idioma().get(0), libro.numeroDeDescargas());
+
+            author.setLibros(bookToSave);
+            libroRepository.save(bookToSave);
+
+            System.out.println("Libro guardado!");
+        }
+        return bookToSave;
+    }
+
+    public Autor searchOrSaveAuthor(DatosLibro libro) {
+        Optional<Autor> autorBuscado = autorRepository.findByNombre(libro.autor().get(0).nombre());
+        Autor authorToSave = null;
+
+
+        if (!autorBuscado.isPresent()) {
+            authorToSave = new Autor(libro.autor().get(0).nombre(),
+                    libro.autor().get(0).nacimiento(), libro.autor().get(0).muerte());
+            autorRepository.save(authorToSave);
+            System.out.println("Autor guardado!");
+        } else {
+            authorToSave = autorBuscado.get();
+            System.out.println("Autor ya registrado!");
+        }
+        return authorToSave;
+
+    }
+
     //Buscar un libro en la web y lo guarda en la base de datos
     //en caso de que no este registrado
     public void searchABookByTitle() {
@@ -133,37 +175,16 @@ public class MainMenu {
         DatosLibros libros = jsonToDatosLibros(data);
 
         if (!libros.libros().isEmpty()) {
-            Autor authorToSave = null;
-            Libro bookToSave = null;
-            //hay libros que no tienen autor
-            //Por conveniencia solo se guardara el primer libro que tenga autor
             DatosLibro libro = getFirstBookWithAuthor(libros.libros());
 
-            Optional<Libro> libroBuscado = libroRepository.findByTituloContainsIgnoreCase(libro.titulo());
-            if (libroBuscado.isPresent()) {
-                System.out.println("El libro ya se encuentra registrado");
-            } else {
-                //Guardar en la base de datos
-                Optional<Autor> autorBuscado = autorRepository.findByNombre(libro.autor().get(0).nombre());
-                if (autorBuscado.isPresent()) {
-                    authorToSave = autorBuscado.get();
-                } else {
-                    authorToSave = new Autor(libro.autor().get(0).nombre(),
-                            libro.autor().get(0).nacimiento(), libro.autor().get(0).muerte());
-                    autorRepository.save(authorToSave);
-                }
-                bookToSave = new Libro(libro.titulo(), authorToSave,
-                        libro.idioma().get(0), libro.numeroDeDescargas());
+            Autor author = searchOrSaveAuthor(libro);
+            Libro book = searchOrSaveBook(author, libro);
+            System.out.println(author);
+            System.out.println(book);
 
-                authorToSave.setLibros(bookToSave);
-                libroRepository.save(bookToSave);
-                System.out.println(bookToSave.toString());
-            }
         } else {
             System.out.println("No se encontraron resultados");
         }
-
-
     }
 
     private void getAllBooks() {
