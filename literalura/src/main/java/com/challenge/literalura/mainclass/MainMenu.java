@@ -10,7 +10,6 @@ import com.challenge.literalura.service.ApiRequest;
 import com.challenge.literalura.service.DataConversion;
 
 import java.util.*;
-import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
 public class MainMenu {
@@ -35,7 +34,7 @@ public class MainMenu {
         do {
             print.menu();
             //Me aseguro que la opcion sea un numero
-            option = getNumber();
+            option = getNumberFromUser();
 
             switch (option) {
                 case 1:
@@ -45,7 +44,7 @@ public class MainMenu {
                     getAllBooks();
                     break;
                 case 3:
-                    getAuthors();
+                    getAllAuthors();
                     break;
                 case 4:
                     getAuthorsAliveInYear();
@@ -73,48 +72,19 @@ public class MainMenu {
 
     }
 
-    private void getAuthorbyName() {
-        String apellido = "";
-
-        System.out.println("Ingrese el nombre y apellido del autor: ");
-        keyBoard.nextLine();
-        String data = keyBoard.nextLine();
-
-
-        String[] names = data.split(" ");
-        apellido = names[names.length - 1];
-
-        List<Autor> autores = autorRepository.findAutorByName(apellido);
-
-        if (autores.isEmpty()) {
-            System.out.println("No se encontraron autores con el apellido: " + apellido);
-        } else {
-            Autor autor = autores.size() > 1 ? selectAuthor(autores) : autores.get(0);
-            System.out.println(autor.toString());
-        }
-
-    }
-
-    private Autor selectAuthor(List<Autor> autores) {
-        int i = 0;
-        System.out.println("Autores encontrados: ");
-        for (Autor autor : autores) {
-            System.out.println(++i + ". " + autor.toString());
-        }
-        System.out.println(i);
-        System.out.println("Seleccione un autor: ");
-        int option = getNumber();
-        return autores.get(option - 1);
-    }
     //TODO: verificar cuando el usuario ingrese algo vacio
 
     //Valida que la opcion sea un numero
-    public int getNumber() {
+    public int getNumberFromUser() {
         int number = 0;
         while (true) {
             try {
                 number = keyBoard.nextInt();
-                return number;
+                keyBoard.nextLine();
+                if(number > 0){
+                    return number;
+                }
+                System.out.println("Por favor, introduce un número válido.");
             } catch (InputMismatchException e) {
                 System.out.println("Por favor, introduce un número válido.");
                 keyBoard.nextLine(); // consume el input invalido
@@ -122,21 +92,30 @@ public class MainMenu {
         }
     }
 
-    //Obtiene datos de la web
+    private String getStringFromUser(String message) {
+        String data = "";
+        while (true) {
+            System.out.println(message);
+            data = keyBoard.nextLine();
+            if (!data.isEmpty()) {
+                return data;
+            }
+        }
+
+    }
+
     public String getWebData(String title) {
         ApiRequest request = new ApiRequest();
         var url = BASE_URL + "/?search=" + title.replace(" ", "+");
         return request.getData(url);
     }
 
-    //Convierte los datos de la web a un objeto DatosLibros
     public DatosLibros jsonToDatosLibros(String data) {
         DataConversion dataConversion = new DataConversion();
         return dataConversion.convertData(data, DatosLibros.class);
     }
 
-    //Guarda el primer libro que tenga autor
-    public DatosLibro getFirstWithAuthor(List<DatosLibro> libros) {
+    public DatosLibro getFirstBookWithAuthor(List<DatosLibro> libros) {
         return libros.stream()
                 .filter(libro -> !libro.autor().isEmpty())
                 .findFirst()
@@ -147,9 +126,8 @@ public class MainMenu {
     //en caso de que no este registrado
     public void searchABookByTitle() {
 
-        System.out.println("Introduce el titulo del libro a buscar: ");
-        keyBoard.nextLine();
-        var title = keyBoard.nextLine();
+        String message = "Introduce el titulo del libro a buscar: ";
+        var title = getStringFromUser(message);
 
         String data = getWebData(title);
         DatosLibros libros = jsonToDatosLibros(data);
@@ -159,7 +137,7 @@ public class MainMenu {
             Libro bookToSave = null;
             //hay libros que no tienen autor
             //Por conveniencia solo se guardara el primer libro que tenga autor
-            DatosLibro libro = getFirstWithAuthor(libros.libros());
+            DatosLibro libro = getFirstBookWithAuthor(libros.libros());
 
             Optional<Libro> libroBuscado = libroRepository.findByTituloContainsIgnoreCase(libro.titulo());
             if (libroBuscado.isPresent()) {
@@ -188,7 +166,6 @@ public class MainMenu {
 
     }
 
-    //Listar todos los libros registrados
     private void getAllBooks() {
         // findAll() retorna una lista de libros o
         //retorna un lista vacia si no encuentra nada
@@ -203,8 +180,7 @@ public class MainMenu {
                 });
     }
 
-
-    private void getAuthors() {
+    private void getAllAuthors() {
         authorsSearched = autorRepository.findAll();
         if (bookSearched.isEmpty()) {
             System.out.println("No se encontraron autores registrados");
@@ -218,13 +194,10 @@ public class MainMenu {
                 });
     }
 
-    //autores vivos en un año determinado
     private void getAuthorsAliveInYear() {
         System.out.println("Ingrese año: ");
-        //Validar que el año sea un numero
-        //var year = keyBoard.nextInt();4
-        var year = getNumber();
-        keyBoard.nextLine();
+
+        var year = getNumberFromUser();
         List<Autor> autoresVivos = autorRepository.getAliveAuthors(year);
         if (autoresVivos.isEmpty()) {
             System.out.println("No hay autores vivos registrados del año: " + year);
@@ -237,14 +210,14 @@ public class MainMenu {
 
     }
 
-    // mostrar libros por idioma
     private void getBooksByLanguage() {
 
         //Imprimir los idiomas disponibles
         print.menuIdioma();
-        System.out.println("Introduce el idioma: ");
-        keyBoard.nextLine();
-        String language = keyBoard.nextLine();
+
+        String message= "Introduce el idioma: ";
+        String language = getStringFromUser(message);
+
         List<Libro> librosPorIdioma = libroRepository.findBookByLanguage(language);
         if (librosPorIdioma.isEmpty()) {
             System.out.println("No se encontraron libros en el idioma: " + language);
@@ -276,7 +249,6 @@ public class MainMenu {
         System.out.println(msj);
     }
 
-
     private void getTop10Books() {
         System.out.println("Top 10 libros mas descargados:");
         List<String> top10Books = libroRepository.findTop10Books();
@@ -290,5 +262,43 @@ public class MainMenu {
         }
 
     }
+
+    private Autor selectAuthor(List<Autor> autores) {
+        int i = 0;
+
+        System.out.println("Autores encontrados: ");
+
+        for (Autor autor : autores) {
+            System.out.println(++i + ". \n" + autor.toString());
+        }
+
+        System.out.println("Seleccione un autor: ");
+        int option = getNumberFromUser();
+
+        return autores.get(option - 1);
+    }
+
+
+    private void getAuthorbyName() {
+        String apellido = "";
+
+        String message = "Introduce el nombre del autor: ";
+        String data = getStringFromUser(message);
+
+        String[] names = data.split(" ");
+        apellido = names[names.length - 1];
+
+        List<Autor> autores = autorRepository.findAutorByName(apellido);
+
+        if (autores.isEmpty()) {
+            System.out.println("No se encontraron autores con el apellido: " + apellido);
+        } else {
+            Autor autor = autores.size() > 1 ? selectAuthor(autores) : autores.get(0);
+            System.out.println(autor.toString());
+        }
+
+    }
+
+
 
 }
