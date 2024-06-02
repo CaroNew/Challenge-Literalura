@@ -1,3 +1,5 @@
+![banner](img/banner.png)
+
 # Challenge-Literalura
 Reto Oracle/Alura Back-end
 
@@ -39,7 +41,7 @@ Dependencias para agregar al crear el proyecto en Spring Initializr:
 ## Cómo probar esta API
 
 
-Modificar el archivo: [application.properties](./literalura/src/main/resources/application.properties) reemplazando las varibles DB_NAME, DB_USER, DB_PASSWORD por el nombre de una base de datos creada, el nombre de usuario y contraseña respectivamente o declarado la variables de entorno de su sistema operativo, luego ejecutar el archivo LiteraluraApplication.java.
+Modificar el archivo: [application.properties](./literalura/src/main/resources/application.properties) reemplazando las varibles DB_NAME, DB_USER, DB_PASSWORD por el nombre de una base de datos creada, el nombre de usuario y contraseña respectivamente o declarado las variables de entorno de su sistema operativo, luego ejecutar el archivo LiteraluraApplication.java.
 
 
 ## Funcionalidad
@@ -91,4 +93,10 @@ Para este reto en particular se tomaron una series de decisiones para facilitar 
 
 ## EXTRAS
 
-En construcción...
+- **Generando estadísticas** (Opción 7): Obtiene el promedio de descargas, el total de descargas de: el libro más descargado y el libro menos descargado, y el total de libros en la base de datos.  
+
+- **Top 10 libros más descargados** (Opción 8): Consulta los 10 libros más descargados en la base de datos.
+
+- **Buscar autor por nombre** (Opción 9): Devuelve el autor buscado, si encuentra mas de una coincidencia, devuelve una lista de autores en la que el usuario deberá elegir el indicado.
+
+**Listar autores con otras consultas**: mejora futura... 

@@ -72,8 +72,6 @@ public class MainMenu {
 
     }
 
-    //TODO: verificar cuando el usuario ingrese algo vacio
-
     //Valida que la opcion sea un numero
     public int getNumberFromUser() {
         int number = 0;
